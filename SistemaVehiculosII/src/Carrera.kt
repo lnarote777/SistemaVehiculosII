@@ -25,6 +25,9 @@ class Carrera(
     init {
         require(distanciaTotal > 0) {"La carrera debe tener una distancia total mayor que cero."}
         require(participantes.isNotEmpty()) {"La lista de participantes no puede estar vacía"}
+        for (vehiculo in participantes){
+            posiciones.add(Pair(vehiculo.nombre, 0))
+        }
     }
 
 
@@ -105,19 +108,9 @@ class Carrera(
     */
     private fun actualizarPosiciones(){
 
-        for (vehiculo in participantes){
-            var distanciaRecorrida = 0
-
-            for (posicion in posiciones){
-                if (posicion.first == vehiculo.nombre){
-                    distanciaRecorrida = posicion.second //actualiza la distancia recorrida si el vehículo está en la lista
-                    break //una vez encontrado se sale del bucle
-                }
-            }
-
-            val nuevaDistancia = distanciaRecorrida + vehiculo.kilometrosActuales
-            posiciones.removeIf { it.first == vehiculo.nombre } //Elimina el par anterior si el vehículo ya está en la lista
-            posiciones.add(Pair(vehiculo.nombre, nuevaDistancia.toInt())) //actualiza el par
+        for ((index, vehiculo) in participantes.withIndex()){
+            val nuevaDistancia = posiciones[index].second + vehiculo.kilometrosActuales
+            posiciones[index] = Pair(vehiculo.nombre, nuevaDistancia.toInt())
         }
 
     }
@@ -154,6 +147,18 @@ class Carrera(
         return ganadores
     }
 
+    fun mostrarGanadores(){
+
+        val ganadores = determinarGanador()
+
+        for (ganador in ganadores){
+            print(ganador.nombre)
+        }
+
+
+    }
+
+
 
     /**
      * Registra una acción realizada por un vehículo en su historial de acciones.
@@ -176,28 +181,47 @@ class Carrera(
      * posición ocupada, la distancia total recorrida, el número de paradas para repostar y el historial de acciones.
      * La colección estará ordenada por la posición ocupada.
      */
-    fun obtenerResultados(): List<ResultadoCarrera>{
-        TODO("Arreglar la funcion")
+    private fun obtenerResultados(): List<ResultadoCarrera>{
         val resultados = mutableListOf<ResultadoCarrera>()
 
-        for (vehiculo in participantes){
+        for (vehiculo in participantes) {
             val posicion = obtenerPosicion(vehiculo)
-            val resultadoVehiculo = ResultadoCarrera(vehiculo, posicion, vehiculo.kilometrosActuales, paradasRepostaje = 0, historialAcciones = listOf("a", " b"))
+            // Calcula el número de paradas para repostar que ha realizado el vehículo sino ha realizado ninguna devuelve 0
+            val paradasRepostaje = historialAcciones[vehiculo.nombre]?.count { it.startsWith("Repostó") } ?: 0
+            // Obtiene el historial de acciones del vehículo durante la carrera
+            val historialVehiculo = historialAcciones[vehiculo.nombre] ?: emptyList()
+            val resultadoVehiculo = ResultadoCarrera(vehiculo, posicion, vehiculo.kilometrosActuales, paradasRepostaje, historialVehiculo)
             resultados.add(resultadoVehiculo)
         }
 
-        return resultados
+        //Devuelde la lista de vehiculos ordenada según la posición
+        return resultados.sortedBy { it.posicion }
     }
 
+    fun imprimirResultados() {
+        val resultados = obtenerResultados()
+
+       for ((index, resultado) in resultados.withIndex()){
+           println("Resultado ${index + 1}: ")
+           println("-Nombre del vehículo: ${resultado.vehiculo.nombre}")
+           println("-Distancia recorrida: ${resultado.vehiculo.kilometrosActuales}Km")
+           println("-Posición: ${resultado.posicion}")
+           println("-Paradas a repostar: ${resultado.paradasRepostaje}")
+           println("-Historial de acciones:")
+           for (accion in resultado.historialAcciones){
+               println("\t- $accion")
+           }
+           println()
+       }
+    }
 
     private fun obtenerPosicion(vehiculo: Vehiculo): Int {
-        TODO("Arreglar la funcion")
-        for (posicion in posiciones){
+        for ((indice,posicion) in posiciones.withIndex()){
             if (vehiculo.nombre == posicion.first){
-                return posicion.second
+                return indice + 1 //Para que las posiciones enmpiecen en 1 y no en 0
             }
         }
-        return 0
+        return -1
     }
 
     //Es opcional si consigo hacerlo funcionar lo dejo

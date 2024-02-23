@@ -18,7 +18,9 @@ fun main() {
     carrera.iniciarCarrera()
 
 
-    println(carrera.determinarGanador())
-    println(carrera.obtenerResultados())
+    println("Ganador/es: ${carrera.mostrarGanadores()}")
+    println()
+    println("************Resultados************")
+    println(carrera.imprimirResultados())
 
 }
