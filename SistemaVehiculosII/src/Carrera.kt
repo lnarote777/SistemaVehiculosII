@@ -177,7 +177,7 @@ class Carrera(
      * La colección estará ordenada por la posición ocupada.
      */
     fun obtenerResultados(): List<ResultadoCarrera>{
-
+        TODO("Arreglar la funcion")
         val resultados = mutableListOf<ResultadoCarrera>()
 
         for (vehiculo in participantes){
@@ -189,8 +189,9 @@ class Carrera(
         return resultados
     }
 
-    private fun obtenerPosicion(vehiculo: Vehiculo): Int {
 
+    private fun obtenerPosicion(vehiculo: Vehiculo): Int {
+        TODO("Arreglar la funcion")
         for (posicion in posiciones){
             if (vehiculo.nombre == posicion.first){
                 return posicion.second
