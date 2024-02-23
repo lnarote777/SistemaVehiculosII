@@ -19,5 +19,6 @@ fun main() {
 
 
     println(carrera.determinarGanador())
+    println(carrera.obtenerResultados())
 
 }

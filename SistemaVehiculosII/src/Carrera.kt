@@ -181,10 +181,22 @@ class Carrera(
         val resultados = mutableListOf<ResultadoCarrera>()
 
         for (vehiculo in participantes){
-            TODO()
+            val posicion = obtenerPosicion(vehiculo)
+            val resultadoVehiculo = ResultadoCarrera(vehiculo, posicion, vehiculo.kilometrosActuales, paradasRepostaje = 0, historialAcciones = listOf("a", " b"))
+            resultados.add(resultadoVehiculo)
         }
 
         return resultados
+    }
+
+    private fun obtenerPosicion(vehiculo: Vehiculo): Int {
+
+        for (posicion in posiciones){
+            if (vehiculo.nombre == posicion.first){
+                return posicion.second
+            }
+        }
+        return 0
     }
 
     //Es opcional si consigo hacerlo funcionar lo dejo
